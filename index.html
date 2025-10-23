@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Functions Quiz - Working Version</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --success-color: #4CAF50;
+            --error-color: #f44336;
+            --warning-color: #ff9800;
+            --text-dark: #333;
+            --text-light: #666;
+            --background-light: #f8f9ff;
+            --white: #ffffff;
+            --border-radius: 20px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-light: 0 8px 32px rgba(102, 126, 234, 0.1);
+            --shadow-medium: 0 12px 48px rgba(102, 126, 234, 0.2);
+            --shadow-heavy: 0 20px 64px rgba(102, 126, 234, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-heavy);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .quiz-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .quiz-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .quiz-content {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            background: var(--background-light);
+            font-size: 1rem;
+            transition: var(--transition);
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 8px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-light);
+            font-family: inherit;
+            min-width: 140px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--text-light), var(--text-dark));
+            margin-right: 15px;
+        }
+
+        .progress-container {
+            margin: 30px 0;
+            padding: 20px;
+            background: var(--background-light);
+            border-radius: 15px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #e0e7ff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            width: 0%;
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
+
+        .question-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: var(--shadow-light);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .question {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            background: var(--background-light);
+            padding: 18px 24px;
+            border-radius: 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .option-label:hover {
+            border-color: var(--primary-color);
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .option-label.selected {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .option-radio {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .result-container {
+            text-align: center;
+            padding: 50px 30px;
+            background: linear-gradient(135deg, var(--background-light), white);
+            border-radius: 20px;
+            margin: 30px 0;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .result-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 20px 0;
+        }
+
+        .result-message {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-header h1 {
+                font-size: 2rem;
+            }
+            
+            .quiz-content {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-medium);
+            border-left: 5px solid var(--success-color);
+            transform: translateX(100%);
+            transition: var(--transition);
+            z-index: 1001;
+            max-width: 400px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            border-left-color: var(--error-color);
+        }
+
+        .notification.warning {
+            border-left-color: var(--warning-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1><i class="fas fa-code"></i> Python Functions Quiz</h1>
+            <p class="quiz-subtitle">Test your knowledge with animated UI and local storage</p>
+        </div>
+        
+        <div class="quiz-content">
+            <div id="startScreen">
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-user"></i> Enter your Name:</label>
+                    <input type="text" id="name" class="form-input" placeholder="Your full name" />
+                </div>
+                <div class="form-group">
+                    <label for="rollNumber"><i class="fas fa-id-badge"></i> Enter your Roll Number:</label>
+                    <input type="text" id="rollNumber" class="form-input" placeholder="Your roll number" />
+                </div>
+                <div class="form-group">
+                    <button onclick="startQuiz()" class="btn">
+                        <i class="fas fa-play"></i> Start Quiz
+                    </button>
+                </div>
+            </div>
+
+            <div id="quizDiv" class="hidden">
+                <div class="progress-container">
+                    <div class="progress-info">
+                        <span><i class="fas fa-question-circle"></i> Question <span id="currentQ">1</span> of <span id="totalQ">15</span></span>
+                        <span><i class="fas fa-clock"></i> Time: <span id="timeDisplay">00:00</span></span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                </div>
+                
+                <div class="question-container">
+                    <div class="question" id="questionText"></div>
+                    <div class="options" id="optionsDiv"></div>
+                </div>
+                
+                <div class="controls">
+                    <button onclick="prevQuestion()" id="prevBtn" class="btn btn-secondary hidden">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <div>
+                        <button onclick="saveProgress()" class="btn btn-secondary">
+                            <i class="fas fa-save"></i> Save Progress
+                        </button>
+                        <button onclick="nextQuestion()" id="nextBtn" class="btn">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resultDiv" class="hidden">
+                <div class="result-container">
+                    <div class="result-message" id="resultMessage">
+                        <i class="fas fa-trophy"></i> Quiz Completed!
+                    </div>
+                    <div class="result-score" id="scoreDisplay">0/15</div>
+                    <div id="resultDetails"></div>
+                    <div class="controls">
+                        <button onclick="retakeQuiz()" class="btn">
+                            <i class="fas fa-redo"></i> Retake Quiz
+                        </button>
+                        <button onclick="downloadReport()" class="btn">
+                            <i class="fas fa-download"></i> Download Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {question:"1. What is a function in Python?",options:["A special type of variable","A block of code that performs a specific task","A built-in constant","A module"],answer:1},
+            {question:"2. How do you define a function in Python?",options:["function myFunc():","def myFunc():","create myFunc():","fun myFunc():"],answer:1},
+            {question:"3. What is a parameter?",options:["A value returned by a function","A variable passed into a function","A constant","A loop"],answer:1},
+            {question:"4. What function is used to find the length of a list?",options:["size()","count()","len()","length()"],answer:2},
+            {question:"5. What does *args do in a function?",options:["Accepts multiple keyword arguments","Accepts multiple positional arguments","Converts arguments to strings","Limits arguments"],answer:1},
+            {question:"6. Which keyword is used to define the scope of a variable as global?",options:["var","scope","global","extern"],answer:2},
+            {question:"7. Which function converts a string to an integer?",options:["str()","float()","int()","chr()"],answer:2},
+            {question:"8. What is type coercion?",options:["Forcing a variable to be a constant","Automatic conversion between data types","Defining function parameters","Mapping variables"],answer:1},
+            {question:"9. Which built-in function returns the absolute value?",options:["abs()","fabs()","absolute()","value()"],answer:0},
+            {question:"10. What is a lambda function?",options:["A function defined without a name","A recursive function","A module","A global variable"],answer:0},
+            {question:"11. Which module provides mathematical functions?",options:["sys","math","time","os"],answer:1},
+            {question:"12. Which module is used to work with system-specific parameters?",options:["sys","time","math","os"],answer:0},
+            {question:"13. What does the time module do?",options:["Manages date and time operations","Handles mathematical operations","Works with system arguments","Displays errors"],answer:0},
+            {question:"14. What does dir() do?",options:["Deletes a variable","Returns a list of attributes and methods","Displays current date","Imports a module"],answer:1},
+            {question:"15. What does the help() function do?",options:["Returns function's result","Displays documentation for an object","Stops code execution","Shows current variables"],answer:1}
+        ];
+
+        // Global variables
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let userName = '';
+        let rollNumber = '';
+        let startTime = null;
+        let timerInterval = null;
+
+        // Local Storage Management
+        class QuizStorage {
+            static saveAttempt(attemptData) {
+                const attempts = this.getAttempts();
+                attempts.push(attemptData);
+                localStorage.setItem('pythonQuizAttempts', JSON.stringify(attempts));
+            }
+
+            static getAttempts() {
+                const stored = localStorage.getItem('pythonQuizAttempts');
+                return stored ? JSON.parse(stored) : [];
+            }
+
+            static saveProgress(progressData) {
+                localStorage.setItem('pythonQuizProgress', JSON.stringify(progressData));
+            }
+
+            static getProgress() {
+                const stored = localStorage.getItem('pythonQuizProgress');
+                return stored ? JSON.parse(stored) : null;
+            }
+
+            static clearProgress() {
+                localStorage.removeItem('pythonQuizProgress');
+            }
+        }
+
+        // Notification System
+        function showNotification(message, type = 'success') {
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+            setTimeout(() => notification.classList.add('show'), 10);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 400);
+            }, 3000);
+        }
+
+        // Timer functions
+        function startTimer() {
+            startTime = new Date();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            if (!startTime) return;
+            const now = new Date();
+            const elapsed = Math.floor((now - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('timeDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        // Start quiz function
+        function startQuiz() {
+            userName = document.getElementById('name').value.trim();
+            rollNumber = document.getElementById('rollNumber').value.trim();
+            
+            if (!userName || !rollNumber) {
+                showNotification('Please enter both name and roll number', 'error');
+                return;
+            }
+
+            // Reset quiz state
+            currentQuestion = 0;
+            userAnswers = [];
+            
+            // Hide start screen and show quiz
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('quizDiv').classList.remove('hidden');
+            
+            // Update total questions
+            document.getElementById('totalQ').textContent = quizData.length;
+            
+            // Start timer and show first question
+            startTimer();
+            showQuestion();
+            
+            showNotification('Quiz started! Good luck!', 'success');
+            console.log('Quiz started for:', userName, 'Roll:', rollNumber);
+        }
+
+        // Show question function
+        function showQuestion() {
+            const q = quizData[currentQuestion];
+            
+            // Update progress
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('progress').style.width = ((currentQuestion + 1) / quizData.length * 100) + '%';
+            
+            // Update question text
+            document.getElementById('questionText').innerHTML = `<i class="fas fa-question-circle"></i> ${q.question}`;
+            
+            // Generate options HTML
+            const optionsHtml = q.options.map((opt, i) => `
+                <label class="option-label" data-index="${i}">
+                    <input type="radio" name="option" value="${i}" class="option-radio" ${userAnswers[currentQuestion] === i ? 'checked' : ''}>
+                    ${opt}
+                </label>
+            `).join('');
+            
+            document.getElementById('optionsDiv').innerHTML = optionsHtml;
+            
+            // Add click event listeners to options
+            document.querySelectorAll('.option-label').forEach(label => {
+                label.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    selectOption(index);
+                });
+            });
+            
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (currentQuestion === 0) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+            
+            if (currentQuestion === quizData.length - 1) {
+                nextBtn.innerHTML = '<i class="fas fa-check"></i> Submit Quiz';
+            } else {
+                nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
+            }
+            
+            console.log('Showing question', currentQuestion + 1, ':', q.question);
+        }
+
+        // Select option function
+        function selectOption(index) {
+            // Clear all selections
+            document.querySelectorAll('.option-label').forEach(label => {
+                label.classList.remove('selected');
+            });
+            
+            // Select the clicked option
+            const selectedLabel = document.querySelector(`.option-label[data-index="${index}"]`);
+            if (selectedLabel) {
+                selectedLabel.classList.add('selected');
+                const radio = selectedLabel.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.checked = true;
+                }
+            }
+            
+            // Store the answer
+            userAnswers[currentQuestion] = index;
+            console.log('Selected option', index, 'for question', currentQuestion + 1);
+        }
+
+        // Next question function
+        function nextQuestion() {
+            const selected = document.querySelector('input[name="option"]:checked');
+            if (!selected) {
+                showNotification('Please select an answer', 'warning');
+                return;
+            }
+            
+            userAnswers[currentQuestion] = parseInt(selected.value);
+            console.log('Answer recorded:', userAnswers[currentQuestion], 'for question', currentQuestion + 1);
+            
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                console.log('Moving to question', currentQuestion + 1);
+                showQuestion();
+            } else {
+                console.log('Quiz completed, submitting...');
+                submitQuiz();
+            }
+        }
+
+        // Previous question function
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                console.log('Moving back to question', currentQuestion + 1);
+                showQuestion();
+            }
+        }
+
+        // Save progress function
+        function saveProgress() {
+            const progressData = {
+                name: userName,
+                rollNumber: rollNumber,
+                currentQuestion: currentQuestion,
+                userAnswers: userAnswers,
+                timestamp: new Date().toISOString()
+            };
+            
+            QuizStorage.saveProgress(progressData);
+            showNotification('Progress saved successfully!', 'success');
+        }
+
+        // Submit quiz function
+        function submitQuiz() {
+            stopTimer();
+            
+            // Calculate score
+            let score = 0;
+            const results = quizData.map((q, i) => {
+                const isCorrect = userAnswers[i] === q.answer;
+                if (isCorrect) score++;
+                return {
+                    question: q.question,
+                    userAnswer: q.options[userAnswers[i]] || 'Not answered',
+                    correctAnswer: q.options[q.answer],
+                    isCorrect: isCorrect
+                };
+            });
+            
+            const timeSpent = new Date() - startTime;
+            const percentage = Math.round((score / quizData.length) * 100);
+            
+            // Save attempt to local storage
+            const attemptData = {
+                name: userName,
+                rollNumber: rollNumber,
+                score: score,
+                total: quizData.length,
+                percentage: percentage,
+                timeSpent: timeSpent,
+                timestamp: new Date().toISOString(),
+                results: results
+            };
+            
+            QuizStorage.saveAttempt(attemptData);
+            QuizStorage.clearProgress();
+            
+            // Display results
+            displayResults(attemptData);
+            
+            // Send to Google Sheets (original functionality)
+            try {
+                fetch('https://script.google.com/a/macros/kprcas.ac.in/s/AKfycbxREZ4yU_QeUzdS85vOoJvQHWYsLBKSeoUy4EBFXD8XoAkw05ELcBLkqvfjlGAKons8/exec', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        rollNumber: rollNumber,
+                        score: score,
+                        total: quizData.length
+                    })
+                });
+            } catch (error) {
+                console.error('Error sending to Google Sheets:', error);
+            }
+
+            // Try to POST attempt to our server API (optional, server must be running)
+            fetch('/api/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(attemptData)
+            })
+            .then(res => res.json())
+            .then(resp => {
+                if (resp && resp.success) {
+                    console.log('Attempt saved to server with id', resp.id);
+                } else {
+                    console.warn('Server did not accept attempt:', resp);
+                }
+            })
+            .catch(err => {
+                console.warn('Could not send attempt to server, saved locally instead', err);
+            });
+        }
+
+        // Display results function
+        function displayResults(attemptData) {
+            const { score, total, percentage, results } = attemptData;
+            
+            // Hide quiz and show results
+            document.getElementById('quizDiv').classList.add('hidden');
+            document.getElementById('resultDiv').classList.remove('hidden');
+            
+            // Update result display
+            document.getElementById('scoreDisplay').textContent = `${score}/${total}`;
+            
+            // Update result message based on performance
+            let message = '';
+            let icon = '';
+            if (percentage >= 90) {
+                message = 'Excellent! Outstanding performance!';
+                icon = 'fas fa-trophy';
+            } else if (percentage >= 75) {
+                message = 'Great job! Well done!';
+                icon = 'fas fa-medal';
+            } else if (percentage >= 60) {
+                message = 'Good work! Keep practicing!';
+                icon = 'fas fa-thumbs-up';
+            } else {
+                message = 'Keep studying and try again!';
+                icon = 'fas fa-book';
+            }
+            
+            document.getElementById('resultMessage').innerHTML = `<i class="${icon}"></i> ${message}`;
+            
+            // Generate performance details
+            const incorrectQuestions = results
+                .map((r, i) => ({ ...r, questionNumber: i + 1 }))
+                .filter(r => !r.isCorrect);
+            
+            // Format time spent
+            const totalSeconds = Math.round(attemptData.timeSpent / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            const timeFormatted = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            let detailsHtml = `
+                <div style="margin: 20px 0; padding: 20px; background: white; border-radius: 15px;">
+                    <h4><i class="fas fa-chart-bar"></i> Performance Summary</h4>
+                    <p><i class="fas fa-score"></i> Score: ${score}/${total} (${percentage}%)</p>
+                    <p><i class="fas fa-clock"></i> Time Taken: ${timeFormatted} (${totalSeconds} seconds)</p>
+                    <p><i class="fas fa-calendar"></i> Completed: ${new Date(attemptData.timestamp).toLocaleString()}</p>
+                </div>
+            `;
+            
+            if (incorrectQuestions.length > 0) {
+                detailsHtml += `
+                    <div style="margin: 20px 0; padding: 20px; background: #fff3f3; border-radius: 15px;">
+                        <h4 style="color: var(--error-color);"><i class="fas fa-times-circle"></i> Review These Questions:</h4>
+                `;
+                
+                incorrectQuestions.forEach(q => {
+                    detailsHtml += `
+                        <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 10px;">
+                            <div style="font-weight: 600;">Q${q.questionNumber}: ${q.question}</div>
+                            <div style="color: var(--error-color);">Your answer: ${q.userAnswer}</div>
+                            <div style="color: var(--success-color);">Correct answer: ${q.correctAnswer}</div>
+                        </div>
+                    `;
+                });
+                
+                detailsHtml += '</div>';
+            }
+            
+            document.getElementById('resultDetails').innerHTML = detailsHtml;
+        }
+
+        // Retake quiz function
+        function retakeQuiz() {
+            // Reset quiz state
+            currentQuestion = 0;
+            userAnswers = [];
+            
+            // Show start screen
+            document.getElementById('resultDiv').classList.add('hidden');
+            document.getElementById('startScreen').style.display = 'block';
+            
+            showNotification('Ready for another attempt!', 'success');
+        }
+
+        // Download report function
+        function downloadReport() {
+            const attempts = QuizStorage.getAttempts().filter(a => a.rollNumber === rollNumber);
+            const latestAttempt = attempts[attempts.length - 1];
+            
+            if (!latestAttempt) {
+                showNotification('No data to download', 'error');
+                return;
+            }
+            
+            const reportData = {
+                studentInfo: {
+                    name: latestAttempt.name,
+                    rollNumber: latestAttempt.rollNumber,
+                    date: new Date(latestAttempt.timestamp).toLocaleDateString()
+                },
+                performance: {
+                    score: `${latestAttempt.score}/${latestAttempt.total}`,
+                    percentage: `${latestAttempt.percentage}%`
+                },
+                results: latestAttempt.results
+            };
+            
+            const reportJson = JSON.stringify(reportData, null, 2);
+            const blob = new Blob([reportJson], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `python_quiz_report_${rollNumber}_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Report downloaded successfully!', 'success');
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for saved progress
+            const progress = QuizStorage.getProgress();
+            if (progress && progress.rollNumber) {
+                const resume = confirm(`Found saved progress for ${progress.rollNumber}. Would you like to resume?`);
+                if (resume) {
+                    document.getElementById('name').value = progress.name;
+                    document.getElementById('rollNumber').value = progress.rollNumber;
+                    showNotification('Previous progress loaded', 'success');
+                } else {
+                    QuizStorage.clearProgress();
+                }
+            }
+            
+            // Add keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (document.getElementById('quizDiv').classList.contains('hidden')) return;
+                
+                if (e.key === 'ArrowLeft' && !document.getElementById('prevBtn').classList.contains('hidden')) {
+                    prevQuestion();
+                } else if (e.key === 'ArrowRight') {
+                    nextQuestion();
+                } else if (e.key >= '1' && e.key <= '4') {
+                    const optionIndex = parseInt(e.key) - 1;
+                    selectOption(optionIndex);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
