@@ -32,6 +32,11 @@ def get_db_connection():
 @app.route('/')
 def index():
     # Serve the admin page (or index.html by default)
+    return send_from_directory('.', 'index.html')
+
+@app.route('/admin')
+def admin():
+    # Serve the admin page (or admin.html by default)
     return send_from_directory('.', 'admin.html')
 
 
